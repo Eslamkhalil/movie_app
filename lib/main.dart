@@ -1,21 +1,23 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_app/app_router.dart';
 
 import 'data/network/remote/dio_helper.dart';
-import 'data/repository/fetch_data_repository.dart';
+import 'my_bloc_observer.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   DioHelper.init();
-  Repository.getPopularMovies();
-  Repository.topRatedMovies();
-  Repository.getTrendingMovies();
-  runApp(MyApp(
-    appRouter: AppRouter(),
-  ));
+  BlocOverrides.runZoned(() {
+    runApp(MyApp(
+      appRouter: AppRouter(),
+    ));
+  }, blocObserver: MyBlocObserver());
 }
 
 class MyApp extends StatelessWidget {
   final AppRouter appRouter;
+
   const MyApp({Key? key, required this.appRouter}) : super(key: key);
 
   @override

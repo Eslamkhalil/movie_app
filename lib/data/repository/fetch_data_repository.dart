@@ -1,30 +1,54 @@
-import 'package:flutter/foundation.dart';
+import 'package:movie_app/data/models/person.dart';
 import 'package:movie_app/data/network/remote/dio_helper.dart';
 
-import '../models/popular_movie_model.dart';
+import '../models/movie_model.dart';
 
-class Repository {
-  static Future<PopularMovieModel> getPopularMovies() async {
-    final result = await DioHelper.getPopularMovies();
-    if (kDebugMode) {
-      print(result.data.toString());
-    }
-    return PopularMovieModel.fromJson(result.data);
+class MoviesRepository {
+  late DioHelper dioHelper;
+
+
+  MoviesRepository({required this.dioHelper});
+
+  Future<MovieModel> getUpcomingMovies() async {
+    final result = await dioHelper.getUpcomingMovies();
+
+    return MovieModel.fromJson(result.data);
   }
 
-  static Future<PopularMovieModel> topRatedMovies() async {
-    final result = await DioHelper.getTopRatedMovies();
-    if (kDebugMode) {
-      print(result.data.toString());
-    }
-    return PopularMovieModel.fromJson(result.data);
+  Future<MovieModel> topRatedMovies() async {
+    final result = await dioHelper.getTopRatedMovies();
+
+    return MovieModel.fromJson(result.data);
   }
 
-  static Future<PopularMovieModel> getTrendingMovies() async {
-    final result = await DioHelper.getTrendingMovies();
-    if (kDebugMode) {
-      print(result.data.toString());
+  Future<List<Person>?> getPopularPersons() async {
+    try {
+      final result = await dioHelper.getPopularPersons();
+      var persons = result.data['results'];
+
+
+      return persons.map<Person>((person) => Person.fromJson(person))
+          .toList();
+    } catch (error, stacktrace) {
+      throw Exception(
+          'Exception accoured: $error with stacktrace: $stacktrace');
     }
-    return PopularMovieModel.fromJson(result.data);
   }
+  Future<MovieModel> getTrendingMovies() async {
+    final result = await dioHelper.getTrendingMovies();
+
+    return MovieModel.fromJson(result.data);
+  }
+
+  Future<MovieModel> getNowPlayingMovies() async {
+    final result = await dioHelper.getNowPlayingMovies();
+
+    return MovieModel.fromJson(result.data);
+  }
+
 }
+
+
+
+
+
