@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/business/cubit/movie_cubit.dart';
 import 'package:movie_app/data/repository/fetch_data_repository.dart';
+import 'package:movie_app/presentation/screens/details_screen.dart';
 import 'package:movie_app/presentation/screens/home.dart';
+import 'package:movie_app/presentation/screens/view_all_screen.dart';
 
 import 'data/network/remote/dio_helper.dart';
 
@@ -25,6 +27,14 @@ class AppRouter {
                 child: Home(),
               )),
         );
+      case '/detailsScreen':
+        return MaterialPageRoute(builder: (context) => const DetailsScreen());
+      case '/viewAllScreen':
+        return MaterialPageRoute(builder: (context) => BlocProvider<MovieCubit>.value(
+          value: movieCubit,
+          child: const ViewAllScreen(),
+        ));
+
     }
     return null;
   }
