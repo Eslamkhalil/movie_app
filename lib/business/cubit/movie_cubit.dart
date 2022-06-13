@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/data/models/person.dart';
 
+import '../../data/models/movie_details_model.dart';
 import '../../data/models/movie_model.dart';
 import '../../data/repository/fetch_data_repository.dart';
 import 'movie_state.dart';
@@ -13,12 +14,11 @@ class MovieCubit extends Cubit<MovieState> {
   static MovieCubit get(context) => BlocProvider.of(context);
 
   final MoviesRepository moviesRepository;
-  List<Results> nowPlayingMovies = [];
-  List<Results> trendingMovies = [];
-  List<Results> upcomingMovies = [];
-  List<Person> persons = [];
-
-
+   MovieDetailsModel? movieDetailsModel;
+  List<Results>? nowPlayingMovies;
+  List<Results>? trendingMovies;
+  List<Results>? upcomingMovies;
+  List<Person>? persons ;
 
   void getPopularPersons() async {
     emit(PopularPersonsLoading());
@@ -34,42 +34,46 @@ class MovieCubit extends Cubit<MovieState> {
       }
       emit(PopularPersonsError(error: error.toString()));
     });
-
   }
-  void getNowPlaying() async {
 
+  void getNowPlaying() async {
     emit(NowPlayingMovieLoading());
     await moviesRepository.getNowPlayingMovies().then((value) {
-
       nowPlayingMovies = value.results!;
       emit(NowPlayingMovieLoaded());
     }).catchError((error) {
       emit(NowPlayingMovieError(error.toString()));
     });
   }
-  
-  void getTrending()async{
 
+  void getTrending() async {
     await moviesRepository.getTrendingMovies().then((value) {
-
       trendingMovies = value.results!;
       emit(TrendingMovieLoaded());
     }).catchError((error) {
       emit(TrendingMovieError(error.toString()));
     });
-    
   }
 
-  void getPopular()async{
-
+  void getPopular() async {
     emit(UpcomingMovieLoading());
     await moviesRepository.getUpcomingMovies().then((value) {
-
-        upcomingMovies = value.results!;
+      upcomingMovies = value.results!;
 
       emit(UpcomingMovieLoaded());
     }).catchError((error) {
       emit(UpcomingMovieError(error.toString()));
+    });
+  }
+
+  void getMovieDetails(int movieId) async {
+    emit(MovieDetailsLoading());
+    await moviesRepository.getMovieDetails(movieId).then((value) {
+      movieDetailsModel = value;
+
+      emit(MovieDetailsLoaded());
+    }).catchError((error) {
+      emit(MovieDetailsError(error: error.toString()));
     });
   }
 }

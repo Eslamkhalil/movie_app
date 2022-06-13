@@ -28,11 +28,15 @@ class AppRouter {
               )),
         );
       case '/detailsScreen':
-        return MaterialPageRoute(builder: (context) => const DetailsScreen());
+        final id = settings.arguments as int ;
+        return MaterialPageRoute(builder: (context) =>  BlocProvider<MovieCubit>.value(
+          value: movieCubit..getMovieDetails(id),
+          child: const DetailsScreen(),));
       case '/viewAllScreen':
+        final title = settings.arguments as String;
         return MaterialPageRoute(builder: (context) => BlocProvider<MovieCubit>.value(
           value: movieCubit,
-          child: const ViewAllScreen(),
+          child:  ViewAllScreen(listName: title),
         ));
 
     }

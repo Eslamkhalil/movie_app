@@ -44,3 +44,13 @@ class PopularPersonsError extends MovieState {
 
   PopularPersonsError({this.error});
 }
+
+class MovieDetailsLoading extends MovieState {}
+
+class MovieDetailsLoaded extends MovieState {}
+
+class MovieDetailsError extends MovieState {
+  dynamic error;
+
+  MovieDetailsError({this.error});
+}

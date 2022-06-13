@@ -16,8 +16,9 @@ class DioHelper {
     dio.options.connectTimeout = 5000;
     dio.options.receiveTimeout = 5000;
 
-    final ioc =  HttpClient();
-    ioc.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+    final ioc = HttpClient();
+    ioc.badCertificateCallback =
+        (X509Certificate cert, String host, int port) => true;
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       client.badCertificateCallback =
@@ -26,13 +27,12 @@ class DioHelper {
     };
   }
 
-   Future<Response> getUpcomingMovies() async {
+  Future<Response> getUpcomingMovies() async {
     return await dio.get(upcomingMoviePath, queryParameters: {
       'api_key': apiKey,
       'language': 'en-US',
       'page': 1
     }).then((value) {
-
       return value;
     }).catchError((error) {
       if (kDebugMode) {
@@ -42,11 +42,10 @@ class DioHelper {
     });
   }
 
-   Future<Response> getNowPlayingMovies() async {
+  Future<Response> getNowPlayingMovies() async {
     return await dio.get(nowPlayingMoviePath, queryParameters: {
       'api_key': apiKey,
     }).then((value) {
-
       return value;
     }).catchError((error) {
       if (kDebugMode) {
@@ -56,13 +55,12 @@ class DioHelper {
     });
   }
 
-   Future<Response> getTopRatedMovies() async {
+  Future<Response> getTopRatedMovies() async {
     return await dio.get(topRatedMovie, queryParameters: {
       'api_key': apiKey,
       'language': 'en-US',
       'page': 1
     }).then((value) {
-
       return value;
     }).catchError((error) {
       if (kDebugMode) {
@@ -72,11 +70,10 @@ class DioHelper {
     });
   }
 
-   Future<Response> getTrendingMovies() async {
+  Future<Response> getTrendingMovies() async {
     return await dio.get(trendingMovie, queryParameters: {
       'api_key': apiKey,
     }).then((value) {
-
       return value;
     }).catchError((error) {
       if (kDebugMode) {
@@ -86,7 +83,7 @@ class DioHelper {
     });
   }
 
-  Future<Response> getPopularPersons ()async{
+  Future<Response> getPopularPersons() async {
     return await dio.get(popularPersonsPath, queryParameters: {
       'api_key': apiKey,
     }).then((value) {
@@ -99,12 +96,13 @@ class DioHelper {
     });
   }
 
- static Future<MovieDetailsModel> getMovieDetails(int movieId) async {
+   Future<MovieDetailsModel> getMovieDetails(int movieId) async {
     return await dio.get('$movieDetailsPath$movieId', queryParameters: {
       'api_key': apiKey,
       'language': 'en-US',
     }).then((value) async {
-      MovieDetailsModel movieDetailsModel = MovieDetailsModel.fromJson(value.data);
+      MovieDetailsModel movieDetailsModel =
+          MovieDetailsModel.fromJson(value.data);
       movieDetailsModel.trailerId = await getTrailerId(movieId);
       movieDetailsModel.movieImage = await getMovieImage(movieId);
       movieDetailsModel.castList = await getCastList(movieId);
@@ -121,6 +119,7 @@ class DioHelper {
       return error;
     });
   }
+
   static getMovieImage(int movieId) async {
     return await dio.get('/movie/$movieId/images', queryParameters: {
       'api_key': apiKey,
@@ -134,7 +133,8 @@ class DioHelper {
       return error;
     });
   }
-  static  Future<String?> getTrailerId(int id) async{
+
+  static Future<String?> getTrailerId(int id) async {
     return await dio.get('/movie/$id/videos', queryParameters: {
       'api_key': apiKey,
     }).then((value) {
@@ -146,7 +146,6 @@ class DioHelper {
       }
       return error;
     });
-
   }
 
   static getCastList(int movieId) async {
@@ -154,11 +153,13 @@ class DioHelper {
       'api_key': apiKey,
     }).then((value) {
       var list = value.data['cast'] as List;
-      List<Cast> castList = list.map((i) => Cast(
-        name: i['name'],
-        character: i['character'],
-        profilePath: i['profile_path'],
-      )).toList();
+      List<Cast> castList = list
+          .map((i) => Cast(
+                name: i['name'],
+                character: i['character'],
+                profilePath: i['profile_path'],
+              ))
+          .toList();
       return castList;
     }).catchError((error) {
       if (kDebugMode) {

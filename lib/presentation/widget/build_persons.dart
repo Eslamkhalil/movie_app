@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:movie_app/data/models/person.dart';
+
 import 'dart:io';
 
 import '../../constants/end_point.dart';
 
 class BuildPersons extends StatelessWidget {
-  const BuildPersons({required this.persons, Key? key}) : super(key: key);
-  final List<Person> persons;
+  const  BuildPersons({required this.persons, Key? key}) : super(key: key);
+  final dynamic  persons;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class BuildPersons extends StatelessWidget {
                                 decoration: const BoxDecoration(
                                     image: DecorationImage(
                                       image: AssetImage(
-                                          'assets/images/img_not_found.jpg'),
+                                          'assets/images/img_not_found.png'),
                                       fit: BoxFit.cover,
                                     ))),
                       ),
@@ -73,7 +73,7 @@ class BuildPersons extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Center(
+                 /* Center(
                     child: Text(
                       persons[index].knowForDepartment!,
                       style: const TextStyle(
@@ -82,7 +82,7 @@ class BuildPersons extends StatelessWidget {
                         fontSize: 10,
                       ),
                     ),
-                  ),
+                  ),*/
                 ],
               );
             },

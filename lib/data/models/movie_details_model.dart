@@ -1,5 +1,6 @@
 class MovieDetailsModel {
   int? id;
+  String? title;
   String? overview;
   String? backdropPath;
   dynamic budget;
@@ -12,6 +13,7 @@ class MovieDetailsModel {
 
   MovieDetailsModel({
     this.id,
+    this.title,
     this.overview,
     this.backdropPath,
     this.budget,
@@ -26,6 +28,7 @@ class MovieDetailsModel {
   factory MovieDetailsModel.fromJson(Map<String, dynamic> json) {
     return MovieDetailsModel(
       id: json['id'],
+      title: json['title'],
       overview: json['overview'],
       backdropPath: json['backdrop_path'],
       budget: json['budget'],
@@ -95,8 +98,8 @@ class Cast {
     }
 
     return Cast(
-        name: json['name'],
-        profilePath: json['profile_path'],
+        name: json['name']??'',
+        profilePath: json['profile_path']??'',
         character: json['character']);
   }
 }

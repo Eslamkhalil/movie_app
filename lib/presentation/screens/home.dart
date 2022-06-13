@@ -1,15 +1,15 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/business/cubit/movie_state.dart';
-import 'package:movie_app/data/models/movie_model.dart';
 
-import 'dart:io';
+
 import '../../business/cubit/movie_cubit.dart';
 import '../../constants/end_point.dart';
 
 import '../utils/helpers_fun.dart';
+import '../widget/build_movie_image.dart';
 import '../widget/build_persons.dart';
 import '../widget/custom_cached_image.dart';
 
@@ -26,9 +26,8 @@ class Home extends StatelessWidget {
         elevation: 0,
         actions: [
           IconButton(
-            onPressed: () => navigateTo(context, '/viewAllScreen'),
             icon: const Icon(Icons.ac_unit_outlined),
-            color: Colors.white,
+            color: Colors.white, onPressed: () {  },
           ),
         ],
         title: const Text(
@@ -52,26 +51,13 @@ class Home extends StatelessWidget {
               var cubit = BlocProvider.of<MovieCubit>(context);
               return ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: ListView(
+                child: cubit.trendingMovies != null && cubit.upcomingMovies  != null ? ListView(
                   physics: const BouncingScrollPhysics(),
                   children: [
-                    /* Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextFormField(
-              controller: searchController,
-              decoration: InputDecoration(
-                labelText: 'Search',
-                suffixIcon: IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.search)),
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                ),
-              ),
-            ),
-          ),*/
+
 
                     CarouselSlider.builder(
-                        itemCount: cubit.nowPlayingMovies.length,
+                        itemCount: cubit.nowPlayingMovies!.length,
                         itemBuilder: (BuildContext context, int index,
                             int pageViewIndex) {
                           return GestureDetector(
@@ -81,40 +67,19 @@ class Home extends StatelessWidget {
                                 ClipRRect(
                                   child: CustomCachedImage(
                                     imageUrl:
-                                        '$imagePath${cubit.nowPlayingMovies[index].posterPath}',
+                                    '$imagePath${cubit.nowPlayingMovies![index].posterPath}',
                                     width: MediaQuery.of(context).size.width,
                                     height:
-                                        MediaQuery.of(context).size.height / 3,
+                                    MediaQuery.of(context).size.height / 3,
                                   ),
-                                  /*CachedNetworkImage(
-                                    imageUrl:
-                                        '$imagePath${cubit.nowPlayingMovies[index].posterPath}',
-                                    height:
-                                        MediaQuery.of(context).size.height / 3,
-                                    fit: BoxFit.cover,
-                                    width: MediaQuery.of(context).size.width,
-                                    placeholder: (context, url) => Platform
-                                            .isAndroid
-                                        ? const CircularProgressIndicator()
-                                        : const CupertinoActivityIndicator(),
-                                    errorWidget: (context, url, error) =>
-                                        Container(
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/img_not_found.jpg'),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),*/
+
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       left: 10, bottom: 10),
                                   child: Text(
-                                    cubit.nowPlayingMovies[index].title!
+                                    cubit.nowPlayingMovies![index].title!
                                         .toUpperCase(),
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
@@ -132,39 +97,42 @@ class Home extends StatelessWidget {
                           enableInfiniteScroll: true,
                           autoPlayInterval: const Duration(seconds: 3),
                           autoPlayAnimationDuration:
-                              const Duration(milliseconds: 500),
+                          const Duration(milliseconds: 500),
                           autoPlay: true,
                           pauseAutoPlayOnTouch: true,
                           viewportFraction: 0.8,
                           enlargeCenterPage: true,
                         )),
                     buildTitles('Trending Movies', 'Get the Trending Movies ',
-                        () => navigateTo(context: context,screen: '/viewAllScreen',args: 'trending')),
+                            () => navigateTo(context: context,screen: '/viewAllScreen',args: 'trending')),
                     SizedBox(
                       height: 165,
                       child: ListView.separated(
                           physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) => buildMovieImage(
-                              context, cubit.trendingMovies[index]),
+                          itemBuilder: (context, index) => BuildMovieImage(
+
+                              results:  cubit.trendingMovies![index]),
                           separatorBuilder: (context, index) => const SizedBox(
-                                width: 5,
-                              ),
-                          itemCount: cubit.trendingMovies.length),
+                            width: 1,
+                          ),
+                          itemCount: cubit.trendingMovies!.length),
                     ),
                     buildTitles('Upcoming Movies', 'Get the Upcoming Movies ',
-                        () => navigateTo(context: context,screen: '/viewAllScreen',args: 'upcoming')),
+                            () => navigateTo(context: context,screen: '/viewAllScreen',args: 'upcoming')),
                     SizedBox(
                       height: 165,
                       child: ListView.separated(
                           physics: const BouncingScrollPhysics(),
                           scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) => buildMovieImage(
-                              context, cubit.upcomingMovies[index]),
+                          itemBuilder: (context, index) => BuildMovieImage(
+                            results:  cubit.upcomingMovies![index],
+
+                          ),
                           separatorBuilder: (context, index) => const SizedBox(
-                                width: 5,
-                              ),
-                          itemCount: cubit.upcomingMovies.length),
+                            width: 1,
+                          ),
+                          itemCount: cubit.upcomingMovies!.length),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0, top: 8.0),
@@ -177,7 +145,7 @@ class Home extends StatelessWidget {
                     ),
                     BuildPersons(persons: cubit.persons),
                   ],
-                ),
+                ) : const Center(child: CircularProgressIndicator()),
               );
             }),
         listener: (context, state) {});
@@ -210,7 +178,7 @@ class Home extends StatelessWidget {
               ),
             ),
             TextButton(
-              onPressed: () => onTap,
+              onPressed: () => onTap(),
               child: const Text('view all',
                   style: TextStyle(
                       fontSize: 16,
@@ -222,7 +190,7 @@ class Home extends StatelessWidget {
         ),
       );
 
-  Widget buildMovieImage(BuildContext context, Results results) => Padding(
+ /* Widget buildMovieImage(BuildContext context, Results results) => Padding(
         padding: const EdgeInsets.all(4.0),
         child: Stack(
           alignment: Alignment.bottomLeft,
@@ -251,5 +219,5 @@ class Home extends StatelessWidget {
             ),
           ],
         ),
-      );
+      );*/
 }

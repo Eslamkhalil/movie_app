@@ -8,7 +8,6 @@ import 'my_bloc_observer.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   DioHelper.init();
-  DioHelper.getMovieDetails(338953);
   BlocOverrides.runZoned(() {
     runApp(MyApp(
       appRouter: AppRouter(),

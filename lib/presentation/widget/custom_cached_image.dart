@@ -20,30 +20,34 @@ class CustomCachedImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      imageUrl: imageUrl,
-      imageBuilder: (context, imageProvider) => Container(
-        height: height,
-        width: width,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: imageProvider,
-            fit: fit,
-          ),
-        ),
-      ),
-      fit: BoxFit.cover,
-      placeholder: (context, url) => Platform.isAndroid
-          ? const CircularProgressIndicator()
-          : const CupertinoActivityIndicator(),
-      errorWidget: (context, url, error) => Container(
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
+        imageBuilder: (context, imageProvider) => Container(
           height: height,
           width: width,
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-            image: AssetImage('assets/images/img_not_found.jpg'),
-            fit: BoxFit.cover,
-          ))),
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight:Radius.circular(30) ),
+            image: DecorationImage(
+              image: imageProvider,
+              fit: fit,
+            ),
+          ),
+        ),
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Platform.isAndroid
+            ? const CircularProgressIndicator()
+            : const CupertinoActivityIndicator(),
+        errorWidget: (context, url, error) => Container(
+            height: height,
+            width: width,
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+              image: AssetImage('assets/images/img_not_found.png'),
+              fit: BoxFit.cover,
+            ))),
+      ),
     );
   }
 }

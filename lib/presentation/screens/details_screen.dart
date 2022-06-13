@@ -1,127 +1,177 @@
-import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_app/business/cubit/movie_cubit.dart';
+import 'package:movie_app/business/cubit/movie_state.dart';
+import 'package:movie_app/presentation/widget/build_persons.dart';
+import 'package:movie_app/presentation/widget/custom_cached_image.dart';
+
+
+import '../../constants/end_point.dart';
 
 class DetailsScreen extends StatelessWidget {
-  const DetailsScreen({Key? key}) : super(key: key);
+  const DetailsScreen({
+    Key? key,
+  }) : super(key: key);
 
+  // MediaQuery.of(context).size.height / 2
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white10,
-      body: SafeArea(
-        child: ListView(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 2,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  ClipRRect(
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          'https://thumbs.dreamstime.com/z/red-tulip-flowers-black-white-background-blossom-blured-96453957.jpg',
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) {
-                        return Platform.isAndroid
-                            ? const Center(child: CircularProgressIndicator())
-                            : const Center(child: CupertinoActivityIndicator());
-                      },
-                      height: MediaQuery.of(context).size.height / 2,
-                      width: double.infinity,
-                      errorWidget: (context, url, error) => Container(
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                            image:
-                                AssetImage('assets/images/no_image_found.jpg'),
-                            fit: BoxFit.cover,
+    final cubit = MovieCubit.get(context);
+    return BlocConsumer<MovieCubit, MovieState>(
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: Colors.white10,
+            body: SafeArea(
+              child: cubit.movieDetailsModel != null
+                  ? ListView(
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 2,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              CustomCachedImage(
+                                  imageUrl:
+                                      'https://image.tmdb.org/t/p/original/${cubit.movieDetailsModel!.backdropPath}',
+                                  width: double.infinity,
+                                  height:
+                                      MediaQuery.of(context).size.height / 2),
+                              IconButton(
+                                onPressed: () {
+                                  debugPrint('Clicked');
+                                  print('Clicked');
+                                  /*    final youtubeUrl = '$baseYoutubePath${cubit.movieDetailsModel!.trailerId}';
+                                  if( await canLaunchUrlString(youtubeUrl)){
+                                  await   launchUrlString(youtubeUrl);
+
+                                  }*/
+                                },
+                                icon: const Icon(Icons.play_arrow_outlined,
+                                    size: 40),
+                                color: Colors.white,
+                              ),
+                              Positioned(
+                                bottom: 15,
+                                left: 20,
+                                right: 8,
+                                child: Text(
+                                  cubit.movieDetailsModel!.title!.toUpperCase(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontFamily: 'muli',
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ),
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.play_arrow_outlined, size: 40),
-                    color: Colors.black,
-                  ),
-                  Positioned(
-                    bottom: 50,
-                    child: const Text(
-                      'Movie Title',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontFamily: 'muli',
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                        const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          child: Text(
+                            'Over View',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              letterSpacing: 1,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'muli',
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 20),
+                          child: Text(
+                            cubit.movieDetailsModel!.overview!,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                              letterSpacing: 0.5,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'muli',
+                            ),
+                          ),
+                        ),
+                        const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          child: Text(
+                            'Screen Shots',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              letterSpacing: 1,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'muli',
+                            ),
+                          ),
+                        ),
+                        cubit.movieDetailsModel!.movieImage!.backdrops
+                                .isNotEmpty
+                            ? ListView.separated(
+                                primary: false,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) => Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Stack(
+                                        alignment: Alignment.bottomLeft,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: CustomCachedImage(
+                                              imageUrl:
+                                                  '$screenShotsImagePath${cubit.movieDetailsModel!.movieImage!.backdrops}',
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  1.5,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  3,
+                                              //fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(width: 8),
+                                itemCount: cubit.movieDetailsModel!.movieImage!
+                                    .backdrops.length)
+                            : CustomCachedImage(
+                                imageUrl: '',
+                                width: MediaQuery.of(context).size.width / 1.5,
+                                height: MediaQuery.of(context).size.height / 5,
+                              ),
+                        const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          child: Text(
+                            'Cast',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              letterSpacing: 1,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'muli',
+                            ),
+                          ),
+                        ),
+                        BuildPersons(
+                            persons: cubit.movieDetailsModel!.castList!),
+                      ],
+                    )
+                  : const Center(child: CircularProgressIndicator()),
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text(
-                'Over View',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  letterSpacing: 1,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'muli',
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-              child: Text(
-                'all about the movie the movie will be having alot of  adavantages and disadvantages so it is the best movie you will eveer seen wallk aroud to fimd the gratest movie you will ever see',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                  letterSpacing: 0.5,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'muli',
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text(
-                'Screen Shots',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  letterSpacing: 1,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'muli',
-                ),
-              ),
-            ),
-
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: Text(
-                'Cast',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                  letterSpacing: 1,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'muli',
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+          );
+        },
+        listener: (context, state) {});
   }
 }
