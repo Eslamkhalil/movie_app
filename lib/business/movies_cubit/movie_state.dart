@@ -49,8 +49,10 @@ class MovieDetailsLoading extends MovieState {}
 
 class MovieDetailsLoaded extends MovieState {}
 
+
 class MovieDetailsError extends MovieState {
   dynamic error;
 
   MovieDetailsError({this.error});
 }
+class ChangeIsLoadingState extends MovieState {}

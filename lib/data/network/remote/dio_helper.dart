@@ -27,11 +27,11 @@ class DioHelper {
     };
   }
 
-  Future<Response> getUpcomingMovies() async {
+  Future<Response> getUpcomingMovies({required int pageNumber}) async {
     return await dio.get(upcomingMoviePath, queryParameters: {
       'api_key': apiKey,
       'language': 'en-US',
-      'page': 1
+      'page': pageNumber
     }).then((value) {
       return value;
     }).catchError((error) {
@@ -55,7 +55,7 @@ class DioHelper {
     });
   }
 
-  Future<Response> getTopRatedMovies() async {
+ /* Future<Response> getTopRatedMovies() async {
     return await dio.get(topRatedMovie, queryParameters: {
       'api_key': apiKey,
       'language': 'en-US',
@@ -68,11 +68,12 @@ class DioHelper {
       }
       return error;
     });
-  }
+  }*/
 
-  Future<Response> getTrendingMovies() async {
+  Future<Response> getTrendingMovies({required int pageNumber}) async {
     return await dio.get(trendingMovie, queryParameters: {
       'api_key': apiKey,
+      'page': pageNumber,
     }).then((value) {
       return value;
     }).catchError((error) {

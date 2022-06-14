@@ -38,6 +38,8 @@ dependencies:
   cached_network_image: ^3.2.1
   carousel_slider: ^4.1.1
   url_launcher: ^6.1.2
+  hexcolor: ^2.0.7
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_lints: ^1.0.0

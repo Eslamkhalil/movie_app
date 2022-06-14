@@ -66,11 +66,8 @@ class BuildPersons extends StatelessWidget {
                   Center(
                     child: Text(
                       persons[index].name!,
-                      style: const TextStyle(
-                        fontFamily: 'muli',
-                        color: Colors.white,
-                        fontSize:12,
-                      ),
+                      style:Theme.of(context).textTheme.subtitle2,
+
                     ),
                   ),
                  /* Center(

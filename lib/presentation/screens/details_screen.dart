@@ -1,20 +1,24 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movie_app/business/cubit/movie_cubit.dart';
-import 'package:movie_app/business/cubit/movie_state.dart';
+
 import 'package:movie_app/presentation/widget/build_persons.dart';
 import 'package:movie_app/presentation/widget/custom_cached_image.dart';
 
+import 'package:url_launcher/url_launcher_string.dart';
 
+
+import '../../business/movies_cubit/movie_cubit.dart';
+import '../../business/movies_cubit/movie_state.dart';
 import '../../constants/end_point.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({
     Key? key,
   }) : super(key: key);
-
+ /* void _launchUrl(String url) async {
+    if (!await launchUrl(_url)) throw 'Could not launch $_url';
+  }*/
   // MediaQuery.of(context).size.height / 2
   @override
   Widget build(BuildContext context) {
@@ -22,7 +26,6 @@ class DetailsScreen extends StatelessWidget {
     return BlocConsumer<MovieCubit, MovieState>(
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: Colors.white10,
             body: SafeArea(
               child: cubit.movieDetailsModel != null
                   ? ListView(
@@ -39,17 +42,10 @@ class DetailsScreen extends StatelessWidget {
                                   height:
                                       MediaQuery.of(context).size.height / 2),
                               IconButton(
-                                onPressed: () {
-                                  debugPrint('Clicked');
-                                  print('Clicked');
-                                  /*    final youtubeUrl = '$baseYoutubePath${cubit.movieDetailsModel!.trailerId}';
-                                  if( await canLaunchUrlString(youtubeUrl)){
-                                  await   launchUrlString(youtubeUrl);
-
-                                  }*/
-                                },
+                                onPressed: ()  =>  launchUrlString(
+                                   'https://www.youtube.com/watch?v=${cubit.movieDetailsModel!.trailerId}'),
                                 icon: const Icon(Icons.play_arrow_outlined,
-                                    size: 40),
+                                    size: 45),
                                 color: Colors.white,
                               ),
                               Positioned(
@@ -58,29 +54,18 @@ class DetailsScreen extends StatelessWidget {
                                 right: 8,
                                 child: Text(
                                   cubit.movieDetailsModel!.title!.toUpperCase(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontFamily: 'muli',
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context).textTheme.subtitle2,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        const Padding(
+                         Padding(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          const  EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                           child: Text(
                             'Over View',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              letterSpacing: 1,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'muli',
-                            ),
+                            style: Theme.of(context).textTheme.headline1,
                           ),
                         ),
                         Padding(
@@ -88,27 +73,15 @@ class DetailsScreen extends StatelessWidget {
                               vertical: 8, horizontal: 20),
                           child: Text(
                             cubit.movieDetailsModel!.overview!,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                              letterSpacing: 0.5,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'muli',
-                            ),
+                            style: Theme.of(context).textTheme.subtitle1,
                           ),
                         ),
-                        const Padding(
+                         Padding(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                           child: Text(
                             'Screen Shots',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              letterSpacing: 1,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'muli',
-                            ),
+                            style:Theme.of(context).textTheme.headline1,
                           ),
                         ),
                         cubit.movieDetailsModel!.movieImage!.backdrops
@@ -150,18 +123,12 @@ class DetailsScreen extends StatelessWidget {
                                 width: MediaQuery.of(context).size.width / 1.5,
                                 height: MediaQuery.of(context).size.height / 5,
                               ),
-                        const Padding(
+                         Padding(
                           padding:
-                              EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                          const  EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                           child: Text(
                             'Cast',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              letterSpacing: 1,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'muli',
-                            ),
+                            style:Theme.of(context).textTheme.headline1,
                           ),
                         ),
                         BuildPersons(
