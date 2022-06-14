@@ -9,17 +9,17 @@ class MoviesRepository {
 
   MoviesRepository({required this.dioHelper});
 
-  Future<MovieModel> getUpcomingMovies() async {
-    final result = await dioHelper.getUpcomingMovies();
+  Future<MovieModel> getUpcomingMovies({required int pageNumber}) async {
+    final result = await dioHelper.getUpcomingMovies(pageNumber: pageNumber);
 
     return MovieModel.fromJson(result.data);
   }
 
-  Future<MovieModel> topRatedMovies() async {
+  /*Future<MovieModel> topRatedMovies() async {
     final result = await dioHelper.getTopRatedMovies();
 
     return MovieModel.fromJson(result.data);
-  }
+  }*/
 
   Future<List<Person>?> getPopularPersons() async {
     try {
@@ -33,8 +33,8 @@ class MoviesRepository {
     }
   }
 
-  Future<MovieModel> getTrendingMovies() async {
-    final result = await dioHelper.getTrendingMovies();
+  Future<MovieModel> getTrendingMovies({required int pageNumber}) async {
+    final result = await dioHelper.getTrendingMovies(pageNumber: pageNumber);
 
     return MovieModel.fromJson(result.data);
   }

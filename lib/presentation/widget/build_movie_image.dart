@@ -37,12 +37,7 @@ class BuildMovieImage extends StatelessWidget {
               child: Text(
                 results.title!,
 
-                style: const TextStyle(
-                  fontFamily: 'muli',
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 12,
-                ),
+                style: Theme.of(context).textTheme.subtitle2,
               ),
             ),
           ],

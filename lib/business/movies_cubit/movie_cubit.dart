@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_app/data/models/person.dart';
 
@@ -14,23 +14,62 @@ class MovieCubit extends Cubit<MovieState> {
   static MovieCubit get(context) => BlocProvider.of(context);
 
   final MoviesRepository moviesRepository;
-   MovieDetailsModel? movieDetailsModel;
+  MovieDetailsModel? movieDetailsModel;
   List<Results>? nowPlayingMovies;
   List<Results>? trendingMovies;
   List<Results>? upcomingMovies;
-  List<Person>? persons ;
+  List<Person>? persons;
+
+  int pageNumber = 1;
+  bool isLoading = false;
+
+  void loadMore(
+      {required ScrollController scrollController, required String title}) {
+    scrollController.addListener(() {
+      if (scrollController.position.maxScrollExtent ==
+              scrollController.position.pixels &&
+          title == 'upcoming') {
+        isLoading = true;
+        emit(ChangeIsLoadingState());
+        getUpcoming(pageNumber: pageNumber += 1);
+        isLoading = false;
+        emit(ChangeIsLoadingState());
+      } else {
+        isLoading = true;
+        emit(ChangeIsLoadingState());
+        getUpcoming(pageNumber: pageNumber = 1);
+        isLoading = false;
+        emit(ChangeIsLoadingState());
+      }
+      if (scrollController.position.maxScrollExtent ==
+              scrollController.position.pixels &&
+          title == 'trending') {
+        isLoading = true;
+        emit(ChangeIsLoadingState());
+        getTrending(pageNumber: pageNumber += 1);
+        isLoading = false;
+        emit(ChangeIsLoadingState());
+      } else {
+        isLoading = true;
+        emit(ChangeIsLoadingState());
+        getTrending(pageNumber: pageNumber = 1);
+        isLoading = false;
+        emit(ChangeIsLoadingState());
+      }
+    });
+  }
 
   void getPopularPersons() async {
     emit(PopularPersonsLoading());
     await moviesRepository.getPopularPersons().then((value) {
       if (kDebugMode) {
-        print('cubit vlaue: ${value!.first}');
+        print('movies_cubit vlaue: ${value!.first}');
       }
       persons = value!;
       emit(PopularPersonsLoaded());
     }).catchError((error) {
       if (kDebugMode) {
-        print('cubit Error: ${error.toString()}');
+        print('movies_cubit Error: ${error.toString()}');
       }
       emit(PopularPersonsError(error: error.toString()));
     });
@@ -46,8 +85,10 @@ class MovieCubit extends Cubit<MovieState> {
     });
   }
 
-  void getTrending() async {
-    await moviesRepository.getTrendingMovies().then((value) {
+  void getTrending({required int pageNumber}) async {
+    await moviesRepository
+        .getTrendingMovies(pageNumber: pageNumber)
+        .then((value) {
       trendingMovies = value.results!;
       emit(TrendingMovieLoaded());
     }).catchError((error) {
@@ -55,9 +96,11 @@ class MovieCubit extends Cubit<MovieState> {
     });
   }
 
-  void getPopular() async {
+  void getUpcoming({required int pageNumber}) async {
     emit(UpcomingMovieLoading());
-    await moviesRepository.getUpcomingMovies().then((value) {
+    await moviesRepository
+        .getUpcomingMovies(pageNumber: pageNumber)
+        .then((value) {
       upcomingMovies = value.results!;
 
       emit(UpcomingMovieLoaded());
